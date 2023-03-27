@@ -1,5 +1,4 @@
 FROM registry.fedoraproject.org/fedora:37
-#FROM registry.fedoraproject.org/fedora-toolbox:37
 
 # Add packages so that distrobox enter is fast
 RUN dnf install -y bash bc curl diffutils dnf-plugins-core findutils gnupg2 less lsof ncurses passwd pinentry \
@@ -20,10 +19,14 @@ RUN dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com
 RUN dnf install -y brave-browser vlc xeyes tree unzip nautilus ffmpeg && \
     dnf clean all
 
-# launch only if requirements are met
+# Launch only if requirements are met
 RUN mv /usr/bin/brave-browser /usr/bin/brave-browser-real
 ADD files/run-if-requirements-met.sh /usr/bin/brave-browser
 ADD files/pump-up-the-volume.sh /usr/local/bin
+
+# Add custom ca certs
+ADD files/tnet-self-signed-ca-cert.crt.pem /etc/pki/ca-trust/source/anchors/
+RUN update-ca-trust
 
 # Make sure the image is up to date (should be run last)
 RUN dnf update -y && \
