@@ -15,8 +15,12 @@ RUN dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com
     rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc && \
     dnf clean all
 
+# Install baseos packages
+RUN dnf install -y xeyes tree unzip nautilus man bzip2 && \
+    dnf clean all
+
 # Install packages from non-fedora sources
-RUN dnf install -y brave-browser vlc xeyes tree unzip nautilus ffmpeg && \
+RUN dnf install -y brave-browser vlc ffmpeg && \
     dnf clean all
 
 # Add special files
