@@ -10,7 +10,7 @@ if [ -f "${required_public_ip_file}" ]; then
   public_ip=$(curl ifconfig.me 2> /dev/null)
   if [ "${required_public_ip}" != "${public_ip}" ]; then
     # Requirement not met
-    xeyes
+    xeyes # TODO: use a gui text prompt, xeyes is placeholder for now
     exit 10
   fi
 fi

@@ -19,15 +19,17 @@ RUN dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com
 RUN dnf install -y brave-browser vlc xeyes tree unzip nautilus ffmpeg && \
     dnf clean all
 
-# Launch only if requirements are met
-RUN mv /usr/bin/brave-browser /usr/bin/brave-browser-real
-ADD files/run-if-requirements-met.sh /usr/bin/brave-browser
+# Add special files
 ADD files/pump-up-the-volume.sh /usr/local/bin
 
 # Add custom ca certs
 ADD files/tnet-self-signed-ca-cert.crt.pem /etc/pki/ca-trust/source/anchors/
 RUN update-ca-trust
 
-# Make sure the image is up to date (should be run last)
+# Make sure the image is up to date (should be run close to last)
 RUN dnf update -y && \
     dnf clean all
+
+# Launch only if requirements are met (must be last or updates will stomp)
+RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
+ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
