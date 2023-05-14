@@ -31,11 +31,20 @@ for file_encoded in $(ls | tr ' ' ''); do
      continue
    fi
 
-   if [ "$file_extension" == "jpg" -o \
+   if [ "$file_extension" == "jpg"   -o \
 	 "$file_extension" == "jpeg" -o \
-	 "$file_extension" == "JPG" -o \
-	 "$file_extension" == "JPEG" ] ; then
+	 "$file_extension" == "JPG"  -o \
+	 "$file_extension" == "JPEG" -o \
+	 "$file_extension" == "png"  -o \
+	 "$file_extension" == "PNG"  -o \
+	 "$file_extension" == "gif"  -o \
+	 "$file_extension" == "GIF" ]; then
       echo "Skipping picture [$file]."
+      continue
+   fi
+
+   if [ "$file_extension" == "sh" ]; then
+      echo "Skipping script [$file]."
       continue
    fi
 
@@ -47,8 +56,17 @@ for file_encoded in $(ls | tr ' ' ''); do
    duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 -sexagesimal "$file")
    input_duration_in_sec=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file")
 
-   echo "Pumping up volume of [$file]. Duration [$duration]."
+   echo
+   echo "Duration [$duration] of [$file]."
    time ffmpeg $extra_options -v warning -hide_banner -stats $extra_input_options $extra_input_options -i "$file" -filter:a "volume=10" $extra_output_options "$file_new_name"
+   output_duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 -sexagesimal "$file_new_name")
+
+   echo
+   echo
+   echo "Duration [$duration] of [$file]."
+   echo "Duration [$output_duration] of [$file_new_name]."
+   echo
+
 
 
    output_duration_in_sec=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file_new_name")
