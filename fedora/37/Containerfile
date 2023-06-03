@@ -16,7 +16,7 @@ RUN dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com
     dnf clean all
 
 # Install baseos packages
-RUN dnf install -y xeyes tree unzip nautilus man bzip2 thunar && \
+RUN dnf install -y xeyes tree unzip nautilus man bzip2 thunar eog && \
     dnf clean all
 
 # Install packages from non-fedora sources
