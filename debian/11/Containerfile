@@ -1,0 +1,42 @@
+FROM jellyfin/jellyfin:latest
+
+ENTRYPOINT /bin/bash
+
+# Add packages so that distrobox enter is fast
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y bash bc curl diffutils findutils \
+      gnupg2 less lsof passwd procps sudo time util-linux wget && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install baseos packages
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
+      openssh-server gpg bash-completion terminator bind9-host bind9-dnsutils rclone tree \
+      x11-apps bzip2 thunar eog vim && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Install Brave Repo
+RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" > /etc/apt/sources.list.d/brave-browser-release.list
+
+
+# Install packages from non-debian sources
+RUN apt update && \
+    apt install -y brave-browser vlc && \
+    rm -rf /var/lib/apt/lists/*
+
+# Setup bashrc with basics
+RUN echo alias ll=\"ls -la --color\" >> /etc/bash.bashrc
+
+# Add special files
+ADD files/pump-up-the-volume.sh /usr/local/bin
+
+# Add custom ca certs
+ADD files/tnet-self-signed-ca-cert.crt.pem /usr/local/share/ca-certificates/tnet/tnet-self-signed-ca-cert.crt
+RUN update-ca-certificates
+
+
+# Launch only if requirements are met (must be last or updates will stomp)
+RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
+ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
