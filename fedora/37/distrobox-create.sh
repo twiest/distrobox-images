@@ -31,4 +31,4 @@ img_name=distrobox-$(basename $(dirname $PWD))
 img_ver=$(basename $PWD)
 date_stamp=$(date +%Y-%m-%d)
 
-distrobox create --name "$1" --home "$home_dir" --image "${img_name}:${img_ver}"
+distrobox create --nvidia --name "$1" --home "$home_dir" --image "${img_name}:${img_ver}"
