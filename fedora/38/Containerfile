@@ -1,7 +1,7 @@
 FROM registry.fedoraproject.org/fedora:38
 
 # Install fedora packages
-RUN dnf install -y xeyes tree unzip nautilus man bzip2 thunar eog && \
+RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man bzip2 thunar eog && \
     dnf clean all
 
 # Add packages so that distrobox enter is fast
