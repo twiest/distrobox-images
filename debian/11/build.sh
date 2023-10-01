@@ -22,4 +22,6 @@ img_name=distrobox-$(basename $(dirname $PWD))
 img_ver=$(basename $PWD)
 date_stamp=$(date +%Y-%m-%d)
 
-time podman build $@ . -t "${img_name}:${date_stamp}" -t "${img_name}:${img_ver}"
+# MUST use "--format docker" because the FROM container images has a HEALTHCHECK. Otherwise I get this warning:
+#      WARN[0138] HEALTHCHECK is not supported for OCI image format and will be ignored. Must use `docker` format
+time podman build --format docker $@ . -t "${img_name}:${date_stamp}" -t "${img_name}:${img_ver}"
