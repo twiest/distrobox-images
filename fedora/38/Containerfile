@@ -5,7 +5,7 @@ RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man 
     dnf clean all
 
 # Add packages so that distrobox enter is fast
-RUN dnf install -y bash bc curl diffutils dnf-plugins-core findutils gnupg2 less lsof ncurses passwd pinentry \
+RUN dnf install -y bash git bc curl diffutils dnf-plugins-core findutils gnupg2 less lsof ncurses passwd pinentry \
         procps-ng shadow-utils sudo time util-linux wget vte-profile terminator rclone && \
     dnf clean all
 
