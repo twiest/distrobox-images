@@ -12,7 +12,7 @@ RUN apt update && \
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
       openssh-server gpg bash-completion terminator bind9-host bind9-dnsutils rclone tree \
-      x11-apps bzip2 thunar nemo eog vim xterm && \
+      x11-apps bzip2 thunar nemo eog vim xterm libheif-examples && \
     rm -rf /var/lib/apt/lists/*
 
 
