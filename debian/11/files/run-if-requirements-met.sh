@@ -15,4 +15,15 @@ if [ -f "${required_public_ip_file}" ]; then
   fi
 fi
 
-exec ${bin}-real $@
+if [ -z "$HOSTNAME" ]; then
+  echo "HOSTNAME not set"
+  exit 11
+fi
+
+new_bin="${bin}-${HOSTNAME}"
+if ! [ -f "${new_bin}" ]; then
+  # Only do this the first time
+  sudo mv "${bin}-real" "${new_bin}"
+fi
+
+exec "$new_bin" $@

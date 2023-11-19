@@ -41,3 +41,6 @@ RUN dnf update -y && \
 # Launch only if requirements are met (must be last or updates will stomp)
 RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
 ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
+
+# fix sudo
+RUN chmod u+s /usr/bin/sudo
