@@ -5,7 +5,10 @@ ENTRYPOINT /bin/bash
 # Add packages so that distrobox enter is fast
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y bash bc curl diffutils findutils \
-      gnupg2 less lsof passwd procps sudo time util-linux wget && \
+      gnupg2 less lsof passwd procps sudo time util-linux wget apt-utils avahi-daemon dialog \
+      iputils-ping keyutils libavahi-core7 libdaemon0 libegl1-mesa libgail-common libgail18 \
+      libgl1-mesa-glx libgtk2.0-0 libgtk2.0-bin libgtk2.0-common libnss-mdns libnss-myhostname \
+      libpcap0.8 libvte-common manpages mtr pigz rsync tcpdump traceroute xz-utils && \
     rm -rf /var/lib/apt/lists/*
 
 # Install baseos packages
