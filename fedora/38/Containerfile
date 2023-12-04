@@ -6,7 +6,9 @@ RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man 
 
 # Add packages so that distrobox enter is fast
 RUN dnf install -y bash git bc curl diffutils dnf-plugins-core findutils gnupg2 less lsof ncurses passwd pinentry \
-        procps-ng shadow-utils sudo time util-linux wget vte-profile terminator rclone && \
+        procps-ng shadow-utils sudo time util-linux wget vte-profile terminator rclone glibc-all-langpacks \
+        glibc-locale-source gnupg2-smime hostname iproute iputils keyutils mtr nss-mdns rsync tcpdump \
+        traceroute whois xorg-x11-xauth zip && \
     dnf clean all
 
 # Add rpmfusion repo
