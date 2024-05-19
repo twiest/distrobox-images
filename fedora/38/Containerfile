@@ -30,7 +30,8 @@ RUN dnf install -y codium brave-browser vlc ffmpeg && \
     dnf clean all
 
 # Add special files
-ADD files/pump-up-the-volume.sh /usr/local/bin
+RUN mv /usr/local /usr/local.orig && \
+    ln -sf /run/host/var/usrlocal /usr/local
 
 # Add custom ca certs
 ADD files/tnet-self-signed-ca-cert.crt.pem /etc/pki/ca-trust/source/anchors/
