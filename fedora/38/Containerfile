@@ -31,7 +31,8 @@ RUN dnf install -y codium brave-browser vlc ffmpeg && \
 
 # Add special files
 RUN mv /usr/local /usr/local.orig && \
-    ln -sf /run/host/var/usrlocal /usr/local
+    ln -sf /run/host/var/usrlocal /usr/local && \
+    ln -sf /run/host/var/usrlocal/etc/profile.d/usrlocal-path.sh /etc/profile.d/usrlocal-path.sh
 
 # Add custom ca certs
 ADD files/tnet-self-signed-ca-cert.crt.pem /etc/pki/ca-trust/source/anchors/
