@@ -13,12 +13,17 @@ RUN apt update && \
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
       openssh-server gpg bash-completion terminator bind9-host bind9-dnsutils rclone tree \
-      x11-apps bzip2 thunar nemo eog vim xterm libheif-examples lsb-release && \
+      x11-apps bzip2 thunar nemo eog vim xterm libheif-examples lsb-release git meld && \
     apt clean all
 
 # Install Brave Repo
 RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" > /etc/apt/sources.list.d/brave-browser-release.list
+
+# Install VS Codium repo
+# from: https://linux.how2shout.com/install-vscodium-on-ubuntu-22-04-20-04-linux/
+RUN curl -sLS https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor > /usr/share/keyrings/vscodium-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main" > /etc/apt/sources.list.d/vscodium.list
 
 # Install session-desktop repo
 # TODO: Put this back in place below once session has 24.04 builds
@@ -54,6 +59,11 @@ RUN wget https://github.com/adobe-fonts/source-code-pro/releases/download/2.042R
     echo && echo && echo && \
     fc-list | grep "Source Code" && \
     echo && echo && echo
+
+# Install VS Codium
+RUN apt update && \
+    apt install -y codium && \
+    rm -rf /var/lib/apt/lists/*
 
 # Launch only if requirements are met (must be last or updates will stomp)
 RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
