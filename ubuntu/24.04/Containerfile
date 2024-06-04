@@ -1,0 +1,65 @@
+FROM ubuntu:24.04
+
+ENTRYPOINT /bin/bash
+
+# Add packages so that distrobox enter is fast
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y \
+        bash apt-utils bash-completion bc bzip2 curl dialog diffutils findutils gnupg gnupg2 gpgsm hostname iproute2 iputils-ping keyutils language-pack-en less libcap2-bin libkrb5-3 libnss-mdns libnss-myhostname libvte-2.9*-common libvte-common locales lsof man-db manpages mtr ncurses-base openssh-client passwd pigz pinentry-curses procps rsync sudo tcpdump time traceroute tree tzdata unzip util-linux wget xauth xz-utils zip libgl1 libegl1 libglx-mesa0 libvulkan1 mesa-vulkan-drivers \
+    && \
+    apt clean all
+
+# Install baseos packages
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
+      openssh-server gpg bash-completion terminator bind9-host bind9-dnsutils rclone tree \
+      x11-apps bzip2 thunar nemo eog vim xterm libheif-examples lsb-release && \
+    apt clean all
+
+# Install Brave Repo
+RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" > /etc/apt/sources.list.d/brave-browser-release.list
+
+# Install session-desktop repo
+# TODO: Put this back in place below once session has 24.04 builds
+#    echo "deb https://deb.oxen.io $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/oxen.list
+RUN curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg && \
+    echo "deb https://deb.oxen.io lunar main" | tee /etc/apt/sources.list.d/oxen.list
+
+# Install packages from non-debian sources
+RUN apt update && \
+    apt install -y brave-browser vlc session-desktop && \
+    apt clean all
+
+# Setup bashrc with basics
+RUN echo alias ll=\"ls -la --color\" >> /etc/bash.bashrc
+RUN echo export PATH="$PATH:/usr/lib/jellyfin-ffmpeg/" >> /etc/bash.bashrc
+
+# Add special files
+RUN mv /usr/local /usr/local.orig && \
+    ln -sf /run/host/var/usrlocal /usr/local && \
+    ln -sf /run/host/var/usrlocal/etc/profile.d/usrlocal-path.sh /etc/profile.d/usrlocal-path.sh
+
+# Add custom ca certs
+ADD files/tnet-self-signed-ca-cert.crt.pem /usr/local/share/ca-certificates/tnet/tnet-self-signed-ca-cert.crt
+RUN update-ca-certificates
+
+# Setup fonts to look nice
+RUN wget https://github.com/adobe-fonts/source-code-pro/releases/download/2.042R-u%2F1.062R-i%2F1.026R-vf/OTF-source-code-pro-2.042R-u_1.062R-i.zip -O fonts.zip && \
+    unzip fonts.zip && \
+    mkdir -p /usr/share/fonts/ && \
+    cp OTF/*.otf /usr/share/fonts/ && \
+    rm -rf fonts.zip OTF && \
+    fc-cache -f -v && \
+    echo && echo && echo && \
+    fc-list | grep "Source Code" && \
+    echo && echo && echo
+
+# Launch only if requirements are met (must be last or updates will stomp)
+RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
+ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
+
+# MUST BE LAST RUN!!!  Make sure everything is up to date
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
+    apt clean all
