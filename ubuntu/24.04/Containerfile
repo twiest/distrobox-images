@@ -2,6 +2,9 @@ FROM ubuntu:24.04
 
 ENTRYPOINT /bin/bash
 
+# We want man pages and other things
+RUN yes | unminimize
+
 # Add packages so that distrobox enter is fast
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y \
