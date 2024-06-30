@@ -20,6 +20,13 @@ if [ -z "$HOSTNAME" ]; then
   exit 11
 fi
 
+script_dir=$(dirname "${BASH_SOURCE[0]}")
+script_extra="$script_dir/script-extra.sh"
+if [ -x "$script_extra" ]; then
+  echo "Running [$script_extra]..."
+  bash "$script_extra"
+fi
+
 new_bin="${bin}-${HOSTNAME}"
 if ! [ -f "${new_bin}" ]; then
   # Only do this the first time

@@ -27,7 +27,7 @@ mkdir -p "$home_dir"
 #cp /etc/skel/.bashrc "$home_dir"
 chown -R twiest:twiest "$home_dir"
 
-img_name=distrobox-$(basename $(dirname $PWD))
+img_name=ghcr.io/twiest/distrobox-$(basename $(dirname $PWD))
 img_ver=$(basename $PWD)
 date_stamp=$(date +%Y-%m-%d)
 

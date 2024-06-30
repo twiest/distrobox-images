@@ -16,7 +16,7 @@ RUN apt update && \
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
       openssh-server gpg bash-completion terminator bind9-host bind9-dnsutils rclone tree \
-      x11-apps bzip2 thunar nemo eog vim xterm libheif-examples lsb-release git meld && \
+      x11-apps bzip2 thunar nemo eog vim xterm libheif-examples lsb-release git meld libnss3-tools && \
     apt clean all
 
 # Install Brave Repo
@@ -43,15 +43,6 @@ RUN apt update && \
 RUN echo alias ll=\"ls -la --color\" >> /etc/bash.bashrc
 RUN echo export PATH="$PATH:/usr/lib/jellyfin-ffmpeg/" >> /etc/bash.bashrc
 
-# Add special files
-RUN mv /usr/local /usr/local.orig && \
-    ln -sf /run/host/var/usrlocal /usr/local && \
-    ln -sf /run/host/var/usrlocal/etc/profile.d/usrlocal-path.sh /etc/profile.d/usrlocal-path.sh
-
-# Add custom ca certs
-ADD files/tnet-self-signed-ca-cert.crt.pem /usr/local/share/ca-certificates/tnet/tnet-self-signed-ca-cert.crt
-RUN update-ca-certificates
-
 # Setup fonts to look nice
 RUN wget https://github.com/adobe-fonts/source-code-pro/releases/download/2.042R-u%2F1.062R-i%2F1.026R-vf/OTF-source-code-pro-2.042R-u_1.062R-i.zip -O fonts.zip && \
     unzip fonts.zip && \
@@ -68,11 +59,22 @@ RUN apt update && \
     apt install -y codium && \
     rm -rf /var/lib/apt/lists/*
 
-# Launch only if requirements are met (must be last or updates will stomp)
-RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
-ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
-
-# MUST BE LAST RUN!!!  Make sure everything is up to date
+# MUST BE LAST APT RUN!!!  Make sure everything is up to date
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
     apt clean all
+
+# Launch only if requirements are met (must be last or updates will stomp)
+RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
+ADD files/run-if-requirements-met---register-self-signed-cert-with-brave---script-extra.sh /opt/brave.com/brave/script-extra.sh
+ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
+
+# Add custom ca certs
+ADD files/tnet-self-signed-ca-cert.crt.pem /usr/share/ca-certificates/tnet/tnet-self-signed-ca-cert.crt
+RUN echo tnet/tnet-self-signed-ca-cert.crt >> /etc/ca-certificates.conf && \
+    update-ca-certificates
+
+# MUST BE RUN LAST!!!  Add special files
+RUN mv /usr/local /usr/local.orig && \
+    ln -sf /run/host/var/usrlocal /usr/local && \
+    ln -sf /run/host/var/usrlocal/etc/profile.d/usrlocal-path.sh /etc/profile.d/usrlocal-path.sh
