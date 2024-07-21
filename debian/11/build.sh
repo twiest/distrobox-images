@@ -18,7 +18,7 @@ set -eou pipefail
 
 cd $(dirname $(readlink -f $0))
 
-img_name=distrobox-$(basename $(dirname $PWD))
+img_name=ghcr.io/twiest/distrobox-$(basename $(dirname $PWD))
 img_ver=$(basename $PWD)
 date_stamp=$(date +%Y-%m-%d)
 

@@ -4,19 +4,15 @@ ENTRYPOINT /bin/bash
 
 # Add packages so that distrobox enter is fast
 RUN apt update && \
-    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y bash bc curl diffutils findutils \
-      gnupg2 less lsof passwd procps sudo time util-linux wget apt-utils avahi-daemon dialog \
-      iputils-ping keyutils libavahi-core7 libdaemon0 libegl1-mesa libgail-common libgail18 \
-      libgl1-mesa-glx libgtk2.0-0 libgtk2.0-bin libgtk2.0-common libnss-mdns libnss-myhostname \
-      libpcap0.8 libvte-common manpages mtr pigz rsync tcpdump traceroute xz-utils && \
-    rm -rf /var/lib/apt/lists/*
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt-get install -y bash apt-utils bash-completion bc bzip2 curl dialog diffutils findutils gnupg gnupg2 gpgsm hostname iproute2 iputils-ping keyutils less libcap2-bin libkrb5-3 libnss-mdns libnss-myhostname libvte-2.9*-common libvte-common locales lsof man-db manpages mtr ncurses-base openssh-client passwd pigz pinentry-curses procps rsync sudo tcpdump time traceroute tree tzdata unzip util-linux wget xauth xz-utils zip libgl1 libegl1-mesa libgl1-mesa-glx libegl1 libglx-mesa0 libvulkan1 mesa-vulkan-drivers && \
+    apt clean all
 
 # Install baseos packages
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
       openssh-server gpg bash-completion terminator bind9-host bind9-dnsutils rclone tree \
       x11-apps bzip2 thunar nemo eog vim xterm libheif-examples && \
-    rm -rf /var/lib/apt/lists/*
+    apt clean all
 
 
 # Install Brave Repo
@@ -31,7 +27,7 @@ RUN curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg && \
 # Install packages from non-debian sources
 RUN apt update && \
     apt install -y brave-browser vlc session-desktop && \
-    rm -rf /var/lib/apt/lists/*
+    apt clean all
 
 # Setup bashrc with basics
 RUN echo alias ll=\"ls -la --color\" >> /etc/bash.bashrc
