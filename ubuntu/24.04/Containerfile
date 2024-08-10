@@ -59,6 +59,14 @@ RUN apt update && \
     apt install -y codium && \
     rm -rf /var/lib/apt/lists/*
 
+# Install bitwarden cli. Change to package if it ever becomes available.
+RUN mkdir -p /var/bw-tmp && \
+    cd /var/bw-tmp && \
+    wget -O bw.linux.zip 'https://vault.bitwarden.com/download/?app=cli&platform=linux' && \
+    unzip bw.linux.zip && \
+    mv bw /usr/bin && \
+    rm -rfv /var/bw-tmp
+
 # MUST BE LAST APT RUN!!!  Make sure everything is up to date
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
