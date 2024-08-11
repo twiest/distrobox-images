@@ -39,7 +39,7 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
           extra-args: |
             --disable-content-trust
-  debian-11-build:
+  debian-12-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -48,10 +48,10 @@ jobs:
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
         with:
-          context: "debian/11"
-          containerfiles: "debian/11/Containerfile"
+          context: "debian/12"
+          containerfiles: "debian/12/Containerfile"
           image: distrobox-debian
-          tags: "latest 11"
+          tags: "latest 12"
           layers: false
           oci: true
 
@@ -59,7 +59,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: distrobox-debian
-          tags: "latest 11"
+          tags: "latest 12"
           registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
