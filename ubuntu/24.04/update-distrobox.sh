@@ -44,5 +44,9 @@ distrobox rm -f "$distrobox_name"
 echo "Waiting 3 seconds otherwise distrobox may fail to create..."
 sleep 3
 
+echo -n "Removing Brave Singletons... "
+rm "/var/home/twiest/distrobox/${distrobox_name}/.config/BraveSoftware/Brave-Browser/Singleton"* || :
+echo "Done."
+
 echo "Creating distrobox instance [$distrobox_name]..."
 ./create-distrobox.sh "$distrobox_name"
