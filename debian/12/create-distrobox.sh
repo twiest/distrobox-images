@@ -13,6 +13,11 @@ fi
 
 cd $(dirname $(readlink -f $0))
 
+img_name=distrobox-$(basename $(dirname $PWD))
+img_ver=$(basename $PWD)
+date_stamp=$(date +%Y-%m-%d)
+
+
 distrobox_dir="$HOME/distrobox"
 home_dir="$distrobox_dir/$1"
 
@@ -26,4 +31,4 @@ img_name=ghcr.io/twiest/distrobox-$(basename $(dirname $PWD))
 img_ver=$(basename $PWD)
 date_stamp=$(date +%Y-%m-%d)
 
-distrobox create --nvidia --unshare-process --unshare-netns --unshare-groups --unshare-devsys --name "$1" --home "$home_dir" --image "${img_name}:${img_ver}"
+distrobox create --nvidia --unshare-process --unshare-groups --unshare-devsys --name "$1" --home "$home_dir" --image "${img_name}:${img_ver}"
