@@ -37,7 +37,7 @@ if [ -d "${home_dir}/.zfs" ]; then
 fi
 
 mkdir -p "$home_dir"
-chown -R twiest:twiest "$home_dir"
+sudo chown -R twiest:twiest "$home_dir"
 distrobox create --nvidia --unshare-process --unshare-groups --unshare-devsys --name "$1" --home "$home_dir" --image "${img_name}:${img_ver}"
 
 if [ "$has_zfs_dir" == "true" ]; then
