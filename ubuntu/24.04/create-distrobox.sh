@@ -41,7 +41,7 @@ sudo chown -R twiest:twiest "$home_dir"
 distrobox create --nvidia --unshare-process --unshare-groups --unshare-devsys --name "$1" --home "$home_dir" --image "${img_name}:${img_ver}"
 
 if [ "$has_zfs_dir" == "true" ]; then
-  echo -n "Re-enabling .zfs dir for [$zfs_fs]... "
-  sudo zfs set snapdir=visible "$zfs_fs"
+  echo -n "Resetting .zfs dir to inheritted for [$zfs_fs]... "
+  sudo zfs inherit snapdir "$zfs_fs"
   echo "Done."
 fi
