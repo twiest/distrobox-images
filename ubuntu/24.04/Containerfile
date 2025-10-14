@@ -2,6 +2,7 @@ FROM ubuntu:24.04
 
 ENTRYPOINT /bin/bash
 
+
 # Fix for bug: https://bugs.launchpad.net/ubuntu-docker-images/+bug/2078583
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y unminimize && \
@@ -93,6 +94,10 @@ ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
 ADD files/tnet-self-signed-ca-cert.crt.pem /usr/share/ca-certificates/tnet/tnet-self-signed-ca-cert.crt
 RUN echo tnet/tnet-self-signed-ca-cert.crt >> /etc/ca-certificates.conf && \
     update-ca-certificates
+
+# Add build date
+ADD files/add-build-date.sh /bin
+RUN /bin/add-build-date.sh
 
 # MUST BE RUN LAST!!!  Add special files
 RUN mv /usr/local /usr/local.orig && \
