@@ -2,22 +2,6 @@ FROM ghcr.io/dani-garcia/vaultwarden:latest as vault
 
 FROM debian:12
 
-# Copy vaultwarden into debian container
-COPY --from=vault /vaultwarden /start.sh /healthcheck.sh /opt/vaultwarden/bin
-
-# Fix vaultwarden to run from /opt
-RUN sed -i -e 's#/vaultwarden #/opt/vaultwarden/bin/vaultwarden #' /opt/vaultwarden/bin/start.sh
-
-# Add packages for vaultwarden
-RUN apt update && \
-    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y libssl3 libmariadb3 libpq5 curl && \
-    apt clean all
-
-# Make sure all vaultwarden deps are met
-RUN echo -e "\n\n\nThis is the list of missing vaultwarden deps (should be 0):" ; \
-    ldd /opt/vaultwarden/bin/vaultwarden  | grep 'not found' ; \
-    test $? -eq 1
-
 ENTRYPOINT /bin/bash
 
 
@@ -102,6 +86,23 @@ RUN echo tnet/tnet-self-signed-ca-cert.crt >> /etc/ca-certificates.conf && \
 # Add build date
 ADD files/add-build-date.sh /bin
 RUN /bin/add-build-date.sh
+
+# Copy vaultwarden into debian container
+COPY --from=vault /vaultwarden /start.sh /healthcheck.sh /opt/vaultwarden/bin
+COPY --from=vault /web-vault /opt/vaultwarden/bin/web-vault
+
+# Fix vaultwarden to run from /opt
+RUN sed -i -e 's#/vaultwarden #/opt/vaultwarden/bin/vaultwarden #' /opt/vaultwarden/bin/start.sh
+
+# Add packages for vaultwarden
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y libssl3 libmariadb3 libpq5 curl && \
+    apt clean all
+
+# Make sure all vaultwarden deps are met
+RUN echo -e "\n\n\nThis is the list of missing vaultwarden deps (should be 0):" ; \
+    ldd /opt/vaultwarden/bin/vaultwarden  | grep 'not found' ; \
+    test $? -eq 1
 
 # MUST BE RUN LAST!!!  Add special files
 RUN mv /usr/local /usr/local.orig && \
