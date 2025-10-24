@@ -6,7 +6,7 @@ FROM debian:12
 COPY --from=vault /vaultwarden /start.sh /healthcheck.sh /opt/vaultwarden/bin
 
 # Fix vaultwarden to run from /opt
-RUN sed -i -e 's#/vaultwarden #/opt/bin/vaultwarden #' /opt/vaultwarden/bin/start.sh
+RUN sed -i -e 's#/vaultwarden #/opt/vaultwarden/bin/vaultwarden #' /opt/vaultwarden/bin/start.sh
 
 # Add packages for vaultwarden
 RUN apt update && \
