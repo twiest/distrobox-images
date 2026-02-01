@@ -14,19 +14,13 @@ RUN apt update && \
       x11-apps bzip2 thunar nemo eog vim xterm libheif-examples webp imagemagick keepassxc && \
     apt clean all
 
-
 # Install Brave Repo
 RUN curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" > /etc/apt/sources.list.d/brave-browser-release.list
 
-# Install session-desktop repo
-RUN curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg && \
-    echo "deb https://deb.oxen.io $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/oxen.list
-
-
 # Install packages from non-debian sources
 RUN apt update && \
-    apt install -y brave-browser vlc session-desktop && \
+    apt install -y brave-browser vlc && \
     apt clean all
 
 # Setup bashrc with basics
