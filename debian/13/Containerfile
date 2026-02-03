@@ -1,6 +1,6 @@
 FROM ghcr.io/dani-garcia/vaultwarden:latest as vault
 
-FROM debian:12
+FROM debian:13
 
 ENTRYPOINT /bin/bash
 
