@@ -43,7 +43,7 @@ RUN curl -sLS https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pu
 
 # Install packages from non-debian sources
 RUN apt update && \
-    apt install -y brave-browser vlc && \
+    apt install -y brave-browser vlc libreoffice && \
     apt clean all
 
 # Setup bashrc with basics
