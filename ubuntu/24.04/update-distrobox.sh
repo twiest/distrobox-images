@@ -11,7 +11,10 @@ if [ $# -ne 1 ]; then
   exit 10
 fi
 
-cd $(dirname $(readlink -f $0))
+echo -n "Checking if sudo works... "
+sudo echo worked
+
+cd $(dirname ${BASH_SOURCE})
 
 img_name=ghcr.io/twiest/distrobox-$(basename $(dirname $PWD))
 img_ver=$(basename $PWD)
