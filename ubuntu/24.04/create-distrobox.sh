@@ -14,11 +14,6 @@ fi
 cd $(dirname $(readlink -f $0))
 
 zone=$1
-img_name=distrobox-$(basename $(dirname $PWD))
-img_ver=$(basename $PWD)
-date_stamp=$(date +%Y-%m-%d)
-
-
 distrobox_dir="$HOME/distrobox"
 home_dir="$distrobox_dir/$zone"
 
