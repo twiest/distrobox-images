@@ -18,12 +18,6 @@ RUN apt update && \
     && \
     apt clean all
 
-RUN command -v host-spawn || \
-    ( \
-      wget -O /usr/bin/host-spawn https://github.com/1player/host-spawn/releases/download/v1.6.0/host-spawn-x86_64 && \
-      chmod -v +x /usr/bin/host-spawn \
-    )
-
 # Install baseos packages
 RUN apt update && \
     DEBIAN_FRONTEND=noninteractive TZ=America/New_York apt install -y man tzdata apt-transport-https \
