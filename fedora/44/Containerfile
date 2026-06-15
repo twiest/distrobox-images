@@ -1,0 +1,54 @@
+FROM registry.fedoraproject.org/fedora:44
+
+# Install fedora packages
+RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man bzip2 thunar eog && \
+    dnf clean all
+
+# Add packages so that distrobox enter is fast
+RUN dnf install -y bash git bc curl diffutils dnf-plugins-core findutils gnupg2 less lsof ncurses passwd pinentry \
+        procps-ng shadow-utils sudo time util-linux wget vte-profile terminator rclone glibc-all-langpacks \
+        glibc-locale-source gnupg2-smime hostname iproute iputils keyutils mtr nss-mdns rsync tcpdump \
+        traceroute whois xorg-x11-xauth zip && \
+    dnf clean all
+
+# Add rpmfusion repo
+RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+        https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
+    dnf clean all
+
+# Add brave repo
+RUN dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo && \
+    rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc && \
+    dnf clean all
+
+# Add vscodium repo
+RUN rpmkeys --import https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg && \
+    printf "[gitlab.com_paulcarroty_vscodium_repo]\nname=download.vscodium.com\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h" | tee -a /etc/yum.repos.d/vscodium.repo
+
+# Remove conflicts
+RUN dnf remove -y libswresample-free && \
+    dnf clean all
+
+# Install packages from non-fedora sources
+RUN dnf install -y codium brave-browser vlc ffmpeg && \
+    dnf clean all
+
+# Add special files
+RUN mv /usr/local /usr/local.orig && \
+    ln -sf /run/host/var/usrlocal /usr/local && \
+    ln -sf /run/host/var/usrlocal/etc/profile.d/usrlocal-path.sh /etc/profile.d/usrlocal-path.sh
+
+# Add custom ca certs
+ADD files/tnet-self-signed-ca-cert.crt.pem /etc/pki/ca-trust/source/anchors/
+RUN update-ca-trust
+
+# Make sure the image is up to date (should be run close to last)
+RUN dnf update -y && \
+    dnf clean all
+
+# Launch only if requirements are met (must be last or updates will stomp)
+RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
+ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
+
+## fix sudo
+#RUN chmod u+s /usr/bin/sudo

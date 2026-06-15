@@ -40,7 +40,7 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
           extra-args: |
             --disable-content-trust
-  debian-13-build:
+  fedora-44-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -49,18 +49,18 @@ jobs:
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
         with:
-          context: "debian/13"
-          containerfiles: "debian/13/Containerfile"
-          image: distrobox-debian
-          tags: "latest 13"
+          context: "fedora/44"
+          containerfiles: "fedora/44/Containerfile"
+          image: distrobox-fedora
+          tags: "latest 44"
           layers: false
           oci: true
 
       - name: Push to ghcr.io
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: distrobox-debian
-          tags: "latest 13"
+          image: distrobox-fedora
+          tags: "latest 44"
           registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
