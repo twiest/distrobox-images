@@ -5,10 +5,7 @@ RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man 
     dnf clean all
 
 # Add packages so that distrobox enter is fast
-RUN dnf install -y bash git bc curl diffutils dnf-plugins-core findutils gnupg2 less lsof ncurses passwd pinentry \
-        procps-ng shadow-utils sudo time util-linux wget vte-profile terminator rclone glibc-all-langpacks \
-        glibc-locale-source gnupg2-smime hostname iproute iputils keyutils mtr nss-mdns rsync tcpdump \
-        traceroute whois xorg-x11-xauth zip && \
+RUN dnf install -y bash.x86_64 bc.x86_64 bzip2.x86_64 curl.x86_64 diffutils.x86_64 findutils.x86_64 glibc-all-langpacks.x86_64 glibc-common.x86_64 glibc-locale-source.x86_64 gnupg2.x86_64 gnupg2-smime.x86_64 hostname.x86_64 iproute.x86_64 iputils.x86_64 keyutils.x86_64 krb5-libs.x86_64 less.x86_64 lsof.x86_64 man-db.x86_64 mesa-dri-drivers.x86_64 mesa-vulkan-drivers.x86_64 mtr.x86_64 ncurses.x86_64 nss-mdns.x86_64 openssh-clients.x86_64 pam.x86_64 pinentry.x86_64 procps-ng.x86_64 rsync.x86_64 shadow-utils.x86_64 sudo.x86_64 tcpdump.x86_64 time.x86_64 traceroute.x86_64 tree.x86_64 unzip.x86_64 util-linux.x86_64 vte-profile.x86_64 wget2-wget.x86_64 which.x86_64 whois.x86_64 xorg-x11-xauth.x86_64 xz.x86_64 zip.x86_64 cracklib-dicts.x86_64 pigz.x86_64 util-linux-script.x86_64 && \
     dnf clean all
 
 # Add rpmfusion repo
