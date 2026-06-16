@@ -4,6 +4,10 @@ FROM registry.fedoraproject.org/fedora:44
 RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man bzip2 thunar eog && \
     dnf clean all
 
+# Remove conflicted packages
+RUN dnf remove -y libswresample-free && \
+    dnf clean all
+
 # Add packages so that distrobox enter is fast
 RUN dnf install -y bash.x86_64 bc.x86_64 bzip2.x86_64 curl.x86_64 diffutils.x86_64 findutils.x86_64 glibc-all-langpacks.x86_64 glibc-common.x86_64 glibc-locale-source.x86_64 gnupg2.x86_64 gnupg2-smime.x86_64 hostname.x86_64 iproute.x86_64 iputils.x86_64 keyutils.x86_64 krb5-libs.x86_64 less.x86_64 lsof.x86_64 man-db.x86_64 mesa-dri-drivers.x86_64 mesa-vulkan-drivers.x86_64 mtr.x86_64 ncurses.x86_64 nss-mdns.x86_64 openssh-clients.x86_64 pam.x86_64 pinentry.x86_64 procps-ng.x86_64 rsync.x86_64 shadow-utils.x86_64 sudo.x86_64 tcpdump.x86_64 time.x86_64 traceroute.x86_64 tree.x86_64 unzip.x86_64 util-linux.x86_64 vte-profile.x86_64 wget2-wget.x86_64 which.x86_64 whois.x86_64 xorg-x11-xauth.x86_64 xz.x86_64 zip.x86_64 cracklib-dicts.x86_64 pigz.x86_64 util-linux-script.x86_64 && \
     dnf clean all
@@ -11,24 +15,24 @@ RUN dnf install -y bash.x86_64 bc.x86_64 bzip2.x86_64 curl.x86_64 diffutils.x86_
 # Add rpmfusion repo
 RUN dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
         https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
+    dnf install -y vlc ffmpeg && \
     dnf clean all
 
-# Add brave repo
+# Install brave
 RUN dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo && \
     rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc && \
-    dnf clean all
+    dnf install -y brave-browser && \
+    dnf clean all && \
+    echo -n "Removing brave repo for faster dnf searches... " && \
+    rm -v /etc/yum.repos.d/brave-browser.repo
 
-# Add vscodium repo
+# Install vscodium
 RUN rpmkeys --import https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg && \
-    printf "[gitlab.com_paulcarroty_vscodium_repo]\nname=download.vscodium.com\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h" | tee -a /etc/yum.repos.d/vscodium.repo
-
-# Remove conflicts
-RUN dnf remove -y libswresample-free && \
-    dnf clean all
-
-# Install packages from non-fedora sources
-RUN dnf install -y codium brave-browser vlc ffmpeg && \
-    dnf clean all
+    printf "[gitlab.com_paulcarroty_vscodium_repo]\nname=download.vscodium.com\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h" | tee -a /etc/yum.repos.d/vscodium.repo && \
+    dnf install -y codium && \
+    dnf clean all && \
+    echo -n "Removing vscodium repo for faster dnf searches... " && \
+    rm -v /etc/yum.repos.d/vscodium.repo
 
 # Add special files
 RUN mv /usr/local /usr/local.orig && \
