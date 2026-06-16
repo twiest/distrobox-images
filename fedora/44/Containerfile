@@ -1,7 +1,7 @@
 FROM registry.fedoraproject.org/fedora:44
 
 # Install fedora packages
-RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man bzip2 thunar eog && \
+RUN dnf install -y openssh-clients openssh-server xeyes tree unzip nautilus man bzip2 thunar eog jc jq vaultwarden vaultwarden-web && \
     dnf clean all
 
 # Remove conflicted packages
