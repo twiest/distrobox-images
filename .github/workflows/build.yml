@@ -32,16 +32,12 @@ jobs:
           pushd "${{ env.SRC_DIR }}"
           ./build.xsh
 
-      - name: Push to ghcr.io
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: distrobox-ubuntu
-          tags: "latest 24.04"
-          registry: ${{ env.IMAGE_REGISTRY }}
-          username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.REGISTRY_PASSWORD }}
-          extra-args: |
-            --disable-content-trust
+      - name: Push container image
+        run: |
+          podman login "${{ env.IMAGE_REGISTRY }}" -u "${{ env.REGISTRY_USER }}" -p "${{ env.REGISTRY_PASSWORD }}"
+          pushd "${{ env.SRC_DIR }}"
+          ./push.xsh
+
   fedora-44:
     env:
       SRC_DIR: fedora/44
@@ -60,13 +56,8 @@ jobs:
           pushd "${{ env.SRC_DIR }}"
           ./build.xsh
 
-      - name: Push to ghcr.io
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: distrobox-fedora
-          tags: "latest 44"
-          registry: ${{ env.IMAGE_REGISTRY }}
-          username: ${{ env.REGISTRY_USER }}
-          password: ${{ env.REGISTRY_PASSWORD }}
-          extra-args: |
-            --disable-content-trust
+      - name: Push container image
+        run: |
+          podman login "${{ env.IMAGE_REGISTRY }}" -u "${{ env.REGISTRY_USER }}" -p "${{ env.REGISTRY_PASSWORD }}"
+          pushd "${{ env.SRC_DIR }}"
+          ./push.xsh
