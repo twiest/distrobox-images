@@ -37,7 +37,7 @@ if pf"{ home_dir }/.zfs".exists():
     zfs_fs = f"ssd/zones/{ distrobox_name }-enc"
     echo -n f"Disabling .zfs dir for [{ zfs_fs }]... "
     sudo zfs set snapdir=hidden f"{ zfs_fs }"
-    echo f"{ GREEN }Done.{ RESTORE }"
+    echo f"{ Ansi.GREEN }Done.{ Ansi.RESTORE }"
 
 mkdir -p @(home_dir)
 sudo chown -R twiest:twiest @(home_dir)
@@ -46,4 +46,4 @@ distrobox create --nvidia --unshare-process --unshare-groups --unshare-devsys --
 if has_zfs_dir:
     echo -n f"Resetting .zfs dir to inheritted for [{ zfs_fs }]... "
     sudo zfs inherit snapdir @(zfs_fs)
-    echo f"{ GREEN }Done.{ RESTORE }"
+    echo f"{ Ansi.GREEN }Done.{ Ansi.RESTORE }"
