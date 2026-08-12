@@ -47,6 +47,14 @@ RUN update-ca-trust
 RUN dnf update -y && \
     dnf clean all
 
+# Install bitwarden cli. Change to package if it ever becomes available.
+RUN mkdir -p /var/bw-tmp && \
+    cd /var/bw-tmp && \
+    wget -O bw.linux.zip 'https://vault.bitwarden.com/download/?app=cli&platform=linux' && \
+    unzip bw.linux.zip && \
+    mv bw /usr/bin && \
+    rm -rfv /var/bw-tmp
+
 # Launch only if requirements are met (must be last or updates will stomp)
 RUN mv /opt/brave.com/brave/brave /opt/brave.com/brave/brave-real
 ADD files/run-if-requirements-met.sh /opt/brave.com/brave/brave
